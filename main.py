@@ -1,5 +1,8 @@
 import random
 import math
+from tkinter import *
+import tkinter.font as font
+
 
 def on_segment(p, q, r):
     """
@@ -24,6 +27,7 @@ def ccw(a, b, c):
 def distance(p1, p2):
     return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2) ** 0.5
 
+
 def cost(p1, p2):
     return distance(p1, p2)
 
@@ -34,6 +38,7 @@ def move_towards(p_i, p_f):  # O(1)
         return p_f
     proportion = STEP_SIZE / line.norm()
     return point_along_at(line, proportion)
+
 
 def point_along_at(line, proportion):
     p_new = tuple()
@@ -121,6 +126,7 @@ class Rectangle(Polygon):
         points = [(x1, y1),(x1, y2),(x2, y2),(x2, y1)]
         Polygon.__init__(self, points)
 
+
 class Boundaries:
     def __init__(self, size, polygons):
         self.__size = size
@@ -146,6 +152,7 @@ class Boundaries:
                 return True
         return False
 
+
 def get_nearest(vertices, goal_point):   # O(num vertices in V)
     min = TOTAL_SIZE*2
     min_v = (-1,-1)
@@ -156,11 +163,10 @@ def get_nearest(vertices, goal_point):   # O(num vertices in V)
             min_v = v
     return min_v
 
+
 def get_near(vertices, goal_point, dist):   # O(num vertices in V)
     return [v for v in vertices if distance(v, goal_point) < dist]
 
-from tkinter import *
-import tkinter.font as font
 
 PI = 3.14
 TOTAL_SIZE = 1000
@@ -169,6 +175,7 @@ NUM_DIM = 2  # d
 MU_X_FREE = TOTAL_SIZE ** NUM_DIM # Lebesgue measure of X_free space, upper bounded by X_sample
 ZETA_DIM = PI * 1 * 1 #area of ball in d dimensions
 GAMMA_RRT_STAR = 2 * ((1 + 1/NUM_DIM) * MU_X_FREE / ZETA_DIM)**(1/NUM_DIM)
+
 
 class Visualize_Path_Finding(Frame):
 
@@ -221,6 +228,7 @@ class Visualize_Path_Finding(Frame):
     def createWidgets(self):
         myFont = font.Font(size=30)
 
+        # Algorithm buttons
         self.RRT_frame = Frame(self)
         self.RRT_frame.pack(side="left")
         button_text = Label(self.RRT_frame, text="    Algorithm:", font=(None,30))
@@ -234,6 +242,7 @@ class Visualize_Path_Finding(Frame):
         for i in range(2):
             make_alg_button(i)
 
+        # Node buttons
         self.widget_frame = Frame(self)
         self.widget_frame.pack(side="left")
         button_text = Label(self.widget_frame, text="    Number of Nodes to Add:", font=(None,30))
@@ -247,6 +256,7 @@ class Visualize_Path_Finding(Frame):
         for i in range(4):
             make_node_button(i)
 
+        # Exploration bias slider
         self.exp_frame = Frame(self)
         self.exp_frame.pack(side="left")
         self.exp_text = Label(self.exp_frame, text="    Exploration Bias:", font=(None, 30))
@@ -254,6 +264,7 @@ class Visualize_Path_Finding(Frame):
         self.exploration_bias_slider = Scale(self.exp_frame, from_=0, to=1, resolution = 0.01, orient = HORIZONTAL, font=(None,30))
         self.exploration_bias_slider.pack(side = LEFT)
 
+        # Goal radius slider
         self.goal_frame = Frame(self)
         self.goal_frame.pack(side="left")
         self.goal_text = Label(self.goal_frame, text="    Goal Radius:", font=(None, 30))
@@ -263,6 +274,7 @@ class Visualize_Path_Finding(Frame):
         self.goal_radius_slider.set(15)
         self.goal_radius_slider.pack(side=LEFT)
 
+        # Cost text
         self.cost_text = Label(self.cost_frame, text="", font=(None, 30))
         self.update_cost_text()
         self.cost_text.pack(side=LEFT)
@@ -329,6 +341,7 @@ class Visualize_Path_Finding(Frame):
         return distance(node, self.goal) <= dist
 
     def path_to_goal(self, goal_node):
+        # Construct path in reverse using parents dict
         self.canvas.delete("goal edges")
         path = []
         cur = goal_node
@@ -339,7 +352,7 @@ class Visualize_Path_Finding(Frame):
         path.reverse()
         self.show_path(path)
 
-    def add_vertices_RRT(self, num_times=1):   # O(num vertices in boundaries * num_times)
+    def add_vertices_RRT(self, num_times=1):   # O(num nodes * num_times)
         for count in range(num_times):
             # Choose random point not in boundaries
             if self.prev_p_random is not None:
@@ -353,7 +366,7 @@ class Visualize_Path_Finding(Frame):
             if random.uniform(0,1) < self.exploration_bias_slider.get():
                 p_random = self.goal
 
-            # Create new point by steering towards chosen random point
+            # Create new point by moving towards chosen random point
             self.show_once_vertex(p_random)
             p_nearest = get_nearest(self.V_adj, p_random)
             p_new = move_towards(p_nearest, p_random)
@@ -385,7 +398,7 @@ class Visualize_Path_Finding(Frame):
             if neighbor != self.parents[v]:
                 self.update_costs(neighbor)
 
-    def add_vertices_RRT_Star(self, num_times=1):   # O(num vertices in boundaries * num_times)
+    def add_vertices_RRT_Star(self, num_times=1):   # O(num nodes * num_times)
         for count in range(num_times):
             # Choose random point not in boundaries
             if self.prev_p_random is not None:
@@ -448,7 +461,7 @@ class Visualize_Path_Finding(Frame):
             self.path_to_goal(self.p_best_in_target)
         self.update_cost_text()
 
-# Create boundaries
+# Create boundaries for visualization
 shapes = []
 shapes.append(Rectangle(350, 0, 400, 800))
 shapes.append(Polygon([(600, 150), (550,200), (650,200)]))
