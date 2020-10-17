@@ -461,6 +461,7 @@ class Visualize_Path_Finding(Frame):
             self.path_to_goal(self.p_best_in_target)
         self.update_cost_text()
 
+
 # Create boundaries for visualization
 shapes = []
 shapes.append(Rectangle(350, 0, 400, 800))
