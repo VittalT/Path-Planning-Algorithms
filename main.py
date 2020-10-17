@@ -365,9 +365,9 @@ class Visualize_Path_Finding(Frame):
                     break
             if random.uniform(0,1) < self.exploration_bias_slider.get():
                 p_random = self.goal
-
-            # Create new point by moving towards chosen random point
             self.show_once_vertex(p_random)
+
+            # Create new point by moving towards the chosen random point
             p_nearest = get_nearest(self.V_adj, p_random)
             p_new = move_towards(p_nearest, p_random)
             if p_new not in self.V_adj and not self.boundaries.intersects(Line(p_nearest, p_new)):
@@ -411,8 +411,9 @@ class Visualize_Path_Finding(Frame):
                     break
             if random.uniform(0,1) < self.exploration_bias_slider.get():
                 p_random = self.goal
-
             self.show_once_vertex(p_random)
+
+            # Create new point by moving towards the chosen random point
             p_nearest = get_nearest(self.V_adj, p_random)
             p_new = move_towards(p_nearest, p_random)
             if p_new not in self.V_adj and not self.boundaries.intersects(Line(p_nearest, p_new)):
