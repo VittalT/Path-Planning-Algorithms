@@ -65,8 +65,7 @@ class Line:
 
     def intersects(self, l2):  # O(1)
         """
-        Return true if line segments AB and CD intersect
-        (unless they are collinear but this has probability 0 with one point being random)
+        Return true if and only if line segments AB and CD intersect
         """
         a, b = self.p1, self.p2
         c, d = l2.p1, l2.p2
@@ -176,7 +175,7 @@ MU_X_FREE = TOTAL_SIZE ** NUM_DIM # Lebesgue measure of X_free space, upper boun
 ZETA_DIM = PI * 1 * 1 #area of ball in d dimensions
 GAMMA_RRT_STAR = 2 * ((1 + 1/NUM_DIM) * MU_X_FREE / ZETA_DIM)**(1/NUM_DIM)
 
-
+# Visualization for both RRT and RRT*
 class Visualize_Path_Finding(Frame):
 
     def __init__(self, boundaries, start, goal):
